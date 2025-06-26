@@ -49,6 +49,7 @@
     }
   </style>
 </head>
+
 <body>
   <!-- Header -->
   <header class="shadow-sm fixed-top py-3">
@@ -350,6 +351,24 @@
             column.style.display = (categoryMatch && typeMatch && locationMatch && titleMatch) ? 'block' : 'none';
             });
         }
+    </script>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get("query")?.toLowerCase();
+
+      if (query) {
+        const jobCards = document.querySelectorAll(".job-card");
+
+        jobCards.forEach(card => {
+          const text = card.textContent.toLowerCase();
+          if (!text.includes(query)) {
+            card.style.display = "none";
+          } else {
+            card.style.display = "block";
+          }
+        });
+      }
     </script>
 
     
