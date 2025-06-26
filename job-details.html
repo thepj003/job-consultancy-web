@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Details - MLM Platform</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #fff);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .nav_a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #4a4a4a;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    .nav_a:hover {
+      color: #0077ff;
+    }
+    header {
+      background: #ffffff;
+    }
+    h1, h2, h3 {
+      color: #343a40;
+      font-weight: 600;
+    }
+    .job-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      margin-top: 100px;
+    }
+    footer {
+      background-color: #fff;
+      border-top: 1px solid #dee2e6;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 60px;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="shadow-sm fixed-top py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1 class="h4 m-0 text-primary">XpertStim</h1>
+      <nav>
+        <a class="nav_a" href="home.html" class="me-3 text-dark fw-semibold">Home</a>
+        <a class="nav_a" href="aboutUs.html" class="me-3 text-dark fw-semibold">About</a>
+        <a class="nav_a" href="contactUs.html" class="me-3 text-dark fw-semibold">Contact</a>
+        <a class="nav_a" href="#" class="text-decoration-none text-dark fw-semibold">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Job Details -->
+  <div class="container job-card">
+    <h1 id="job-title">Loading...</h1>
+    <p><strong>Company:</strong> <span id="job-company"></span></p>
+    <p><strong>Location:</strong> <span id="job-location"></span></p>
+    <p><strong>Job Type:</strong> <span id="job-type"></span></p>
+    <p><strong>Salary:</strong> <span id="job-salary"></span></p>
+    <p><strong>Category:</strong> <span id="job-category"></span></p>
+    <hr />
+    <p id="job-desc"></p>
+    <h5>Requirements:</h5>
+    <ul id="job-reqs"></ul>
+    <div class="text-center">
+        <a href="apply.html" class="btn btn-primary mt-3">Apply Now</a>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 MLM Platform. All rights reserved.
+  </footer>
+
+  <!-- Job Loader Script -->
+  
+  <script src="jobs.js"></script>
+  <script src="job-details.js"></script>
+
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const jobId = parseInt(params.get("id"));
+
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      document.getElementById("job-title").textContent = job.title;
+      document.getElementById("job-company").textContent = job.company;
+      document.getElementById("job-location").textContent = job.location;
+      document.getElementById("job-type").textContent = job.type;
+      document.getElementById("job-salary").textContent = job.salary;
+      document.getElementById("job-category").textContent = job.category;
+      document.getElementById("job-desc").textContent = job.description;
+
+      const list = document.getElementById("job-reqs");
+      job.requirements.forEach(req => {
+        const li = document.createElement("li");
+        li.textContent = req;
+        list.appendChild(li);
+      });
+    } else {
+      document.querySelector(".job-card").innerHTML = "<h2>Job not found</h2>";
+    }
+  </script>
+</body>
+</html>
