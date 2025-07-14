@@ -124,7 +124,7 @@
         </button>
       </div>
 
-      <div class="list-group mt-3">
+      <div class="list-group mt-3" id = "postedJobsList">
         <div class="list-group-item d-flex justify-content-between align-items-center">
           Web Developer - Jaipur
           <div>
@@ -184,14 +184,14 @@
     <!-- Post Job -->
     <div id="postJob" class="section">
       <h3>Post a New Job</h3>
-      <form class="mt-3">
+      <form class="mt-3" id="postJobForm">
         <div class="mb-3">
           <label class="form-label">Job Title</label>
-          <input type="text" class="form-control" required />
+          <input type="text" class="form-control" id = "jobTitle" required />
         </div>
         <div class="mb-3">
           <label class="form-label">Location</label>
-          <input type="text" class="form-control" required />
+          <input type="text" class="form-control" id = "jobLocation" required />
         </div>
         <div class="mb-3">
           <label class="form-label">Category</label>
@@ -204,7 +204,7 @@
         </div>
         <div class="mb-3">
           <label class="form-label">Description</label>
-          <textarea class="form-control" rows="4" required></textarea>
+          <textarea class="form-control" rows="4" id = "jobDescription" required></textarea>
         </div>
         <button class="btn btn-primary">Post Job</button>
       </form>
@@ -245,6 +245,92 @@
   });
 </script>
 
+<script>
+  let editingIndex = null;
+
+  function getJobs() {
+    return JSON.parse(localStorage.getItem("postedJobs") || "[]");
+  }
+
+  function saveJobs(jobs) {
+    localStorage.setItem("postedJobs", JSON.stringify(jobs));
+  }
+
+  function renderJobs() {
+    const jobs = getJobs();
+    const jobList = document.getElementById("postedJobsList");
+    jobList.innerHTML = "";
+
+    if (jobs.length === 0) {
+      jobList.innerHTML = "<p class='text-muted'>No jobs posted yet.</p>";
+      return;
+    }
+
+    jobs.forEach((job, index) => {
+      const jobItem = document.createElement("div");
+      jobItem.className = "list-group-item d-flex justify-content-between align-items-center";
+      jobItem.innerHTML = `
+        <div>
+          <strong>${job.title}</strong> - ${job.location}
+        </div>
+        <div>
+          <button class="btn btn-sm btn-warning me-2" onclick="editJob(${index})">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteJob(${index})">Delete</button>
+        </div>
+      `;
+      jobList.appendChild(jobItem);
+    });
+  }
+
+  function deleteJob(index) {
+    const jobs = getJobs();
+    jobs.splice(index, 1);
+    saveJobs(jobs);
+    renderJobs();
+  }
+
+  function editJob(index) {
+    const jobs = getJobs();
+    const job = jobs[index];
+    editingIndex = index;
+
+    document.getElementById("jobTitle").value = job.title;
+    document.getElementById("jobLocation").value = job.location;
+    document.getElementById("jobDescription").value = job.description;
+
+    // Navigate to Post Job tab
+    document.querySelector('.sidebar a[data-section="postJob"]').click();
+  }
+
+  function handleJobFormSubmit(event) {
+    event.preventDefault();
+
+    const title = document.getElementById("jobTitle").value;
+    const location = document.getElementById("jobLocation").value;
+    const description = document.getElementById("jobDescription").value;
+
+    const jobs = getJobs();
+
+    const newJob = { title, location, description };
+
+    if (editingIndex !== null) {
+      jobs[editingIndex] = newJob;
+      editingIndex = null;
+    } else {
+      jobs.push(newJob);
+    }
+
+    saveJobs(jobs);
+    renderJobs();
+    document.getElementById("postJobForm").reset();
+    document.querySelector('.sidebar a[data-section="postedJobs"]').click();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    renderJobs();
+    document.getElementById("postJobForm").addEventListener("submit", handleJobFormSubmit);
+  });
+</script>
 
 </body>
 </html>
